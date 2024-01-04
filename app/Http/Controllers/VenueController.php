@@ -10,9 +10,19 @@ class VenueController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // Validate latitude and longitude
+        $request->validate([
+            'latitude' => ['required', 'numeric', 'min:-90', 'max:90'],
+            'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
+        ]);
+
+        $venues = new OverpassController($request->latitude, $request->longitude);
+        $venues = $venues->getVenues();
+
+        return $venues;
+
     }
 
     /**
