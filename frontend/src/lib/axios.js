@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import router from "@/router";
 
 const csrf = async () => {
     // check cookies for XSRF-TOKEN
@@ -7,7 +8,7 @@ const csrf = async () => {
         return
     }
 
-    return await Axios.get(import.meta.env.VITE_PUBLIC_BACKEND_URL + '/sanctum/csrf-cookie')
+    return await Axios.get(import.meta.env.VITE_PUBLIC_BACKEND_URL + '/sanctum/csrf-cookie', {withCredentials: true});
 }
 
 // create axios instance with interceptors
@@ -20,15 +21,20 @@ const axios = Axios.create({
     withXSRFToken: true,
 })
 
-axios.interceptors.request.use(
-    async (config) => {
-        await csrf()
+async function onFulfilled(config) {
+    await csrf();
 
-        return config
-    },
-    (error) => {
-        return Promise.reject(error)
-    },
-)
+    return config;
+}
+
+function onRejected(error) {
+    if (error.response.status === 401) {
+        router.push({name: 'logout'});
+    }
+    return Promise.reject(error);
+}
+
+axios.interceptors.request.use(onFulfilled, onRejected);
+axios.interceptors.response.use((response) => {return response}, onRejected);
 
 export default axios

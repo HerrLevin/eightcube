@@ -75,6 +75,18 @@ const routes = [
         },
     },
     {
+        path: '/logout',
+        name: 'logout',
+        component: () => {
+            const store = useUsers()
+            store.logout();
+        },
+        meta: {
+            title: 'Log out',
+            guard: 'auth',
+        },
+    },
+    {
         path: '/register',
         name: 'register',
         component: Register,

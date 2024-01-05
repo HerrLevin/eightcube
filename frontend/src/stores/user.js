@@ -126,16 +126,23 @@ export const useUsers = defineStore('users', {
             await axios
                 .post('/logout')
                 .then(() => {
-                    this.$reset()
-                    this.userData = {}
-                    this.authStatus = []
+                    this.clearUserData();
 
                     this.router.push({ name: 'welcome' })
                 })
                 .catch(error => {
+                    if (error.response.status === 401) {
+                        this.clearUserData()
+                        this.router.push({ name: 'welcome' })
+                    }
                     if (error.response.status !== 422) throw error
                 })
         },
+        clearUserData() {
+            this.$reset()
+            this.userData = {}
+            this.authStatus = []
+        }
     },
 })
 
