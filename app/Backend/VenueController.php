@@ -4,9 +4,9 @@ namespace App\Backend;
 
 use App\Helpers\LocationHelper;
 use App\Models\Node;
-use App\Models\NodeTag;
 use App\Models\RequestLocation;
 use App\Services\OverpassService;
+use Illuminate\Support\Collection;
 
 class VenueController
 {
@@ -21,7 +21,7 @@ class VenueController
 
     public function getNearbyVenues()
     {
-        // find nearby locations in database
+        // find nearby request locations in database
         $locations = LocationHelper::getNearby(
             RequestLocation::class,
             $this->latitude,
@@ -50,10 +50,11 @@ class VenueController
         return LocationHelper::getNearby(Node::with('tags'), $this->latitude, $this->longitude, 200);
     }
 
-    private function nodesFromOverpass(): array
+    private function nodesFromOverpass(): Collection
     {
         $venues = new OverpassService($this->latitude, $this->longitude);
         $venues = $venues->getVenues();
+        $collection = collect();
 
         foreach ($venues as $venue) {
             $node = Node::updateOrCreate(
@@ -62,6 +63,12 @@ class VenueController
                     'name' => $venue['name'],
                     'latitude' => $venue['latitude'],
                     'longitude' => $venue['longitude'],
+                    'distance' => LocationHelper::distance(
+                        $this->latitude,
+                        $this->longitude,
+                        $venue['latitude'],
+                        $venue['longitude']
+                    ),
                 ]
             );
 
@@ -72,13 +79,15 @@ class VenueController
             }
 
             foreach ($venue['tags'] as $key => $value) {
-                NodeTag::updateOrCreate(
+                $node->tags()->updateOrCreate(
                     ['node_id' => $node->id, 'key' => $key],
                     ['value' => $value]
                 );
             }
+
+            $collection->push($node);
         }
 
-        return $venues;
+        return $collection;
     }
 }

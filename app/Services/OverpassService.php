@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Generator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -83,26 +84,20 @@ class OverpassService
         return json_decode($response, true);
     }
 
-    public function getVenues(): array
+    public function getVenues(): Generator
     {
         $response = $this->getElements();
 
-        $venues = [];
-
         foreach ($response['elements'] as $element) {
             if ($element['type'] === 'node') {
-                $venue = [
+                yield [
                     'id' => $element['id'],
                     'name' => $element['tags']['name'] ?? '',
                     'latitude' => $element['lat'],
                     'longitude' => $element['lon'],
                     'tags' => $element['tags'],
                 ];
-
-                $venues[] = $venue;
             }
         }
-
-        return $venues;
     }
 }

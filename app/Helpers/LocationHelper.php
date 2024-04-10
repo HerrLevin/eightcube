@@ -28,4 +28,15 @@ class LocationHelper
         }
         return $result->orderBy('distance')->get();
     }
+
+    public static function distance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo)
+    {
+        $theta = $longitudeFrom - $longitudeTo;
+        $distance = sin(deg2rad($latitudeFrom)) * sin(deg2rad($latitudeTo))
+            + cos(deg2rad($latitudeFrom)) * cos(deg2rad($latitudeTo)) * cos(deg2rad($theta));
+        $distance = acos($distance);
+        $distance = rad2deg($distance);
+        $distance = $distance * 60 * 1.1515;
+        return round($distance * 1.609344, 2);
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Backend\VenueController as VenueBackend;
+use App\Http\Resources\NodeResource;
 use Illuminate\Http\Request;
 
 class VenueController extends Controller
@@ -17,7 +19,9 @@ class VenueController extends Controller
             'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
         ]);
 
-        return (new \App\Backend\VenueController($validated['latitude'], $validated['longitude']))->getNearbyVenues();
+        $venues = (new VenueBackend($validated['latitude'], $validated['longitude']))->getNearbyVenues();
+
+        return NodeResource::collection($venues);
     }
 
 
