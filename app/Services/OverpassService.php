@@ -1,13 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Services;
 
-class OverpassController
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+
+class OverpassService
 {
     private float $latitude;
     private float $longitude;
     private int $radius;
-    private array $filters = [
+    private Client $client;
+    private const array FILTERS = [
         'amenity' => [
             'cafe',
             'bank',
@@ -44,17 +48,18 @@ class OverpassController
         $this->latitude = $latitude;
         $this->longitude = $longitude;
         $this->radius = $radius;
+        $this->client = new Client();
     }
 
     private function getQuery(): string
     {
         $query = "[out:json][timeout:25];(";
-        foreach ($this->filters as $key => $filter) {
+        foreach (static::FILTERS as $key => $filter) {
             if (is_array($filter)) {
                 $filters = implode('|', $filter);
                 $query .= "node(around:$this->radius,$this->latitude,$this->longitude)[\"$key\"~\"$filters\"];";
             } else {
-                $query .= "node(around:$this->radius,$this->latitude,$this->longitude)[\"$key\"];";
+                $query .= "node(around:$this->radius,$this->latitude,$this->longitude)[\"$filter\"];";
             }
         }
 
@@ -62,20 +67,25 @@ class OverpassController
         return $query;
     }
 
-    public function getVenues(): array
+    private function getElements(): array
     {
         $query = $this->getQuery();
 
         $url = "https://overpass-api.de/api/interpreter?data=" . urlencode($query);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        try {
+            $response = $this->client->get($url);
+        } catch (GuzzleException $e) {
+            return [];
+        }
+        $response = $response->getBody()->getContents();
 
-        $response = curl_exec($ch);
-        curl_close($ch);
+        return json_decode($response, true);
+    }
 
-        $response = json_decode($response, true);
+    public function getVenues(): array
+    {
+        $response = $this->getElements();
 
         $venues = [];
 
@@ -86,7 +96,7 @@ class OverpassController
                     'name' => $element['tags']['name'] ?? '',
                     'latitude' => $element['lat'],
                     'longitude' => $element['lon'],
-                    'amenity' => $element['tags']['amenity'] ?? '',
+                    'tags' => $element['tags'],
                 ];
 
                 $venues[] = $venue;
