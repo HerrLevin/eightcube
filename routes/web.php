@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\VenueController;
-use App\Services\OverpassService;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -27,10 +25,4 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
-Route::get('venues', [VenueController::class, 'index'])->name('venues.index');
-Route::get('/overpass', function () {
-
-    $overpass = new OverpassService(49.00992840613181, 8.42846232526822);
-    return $overpass->getVenues();
-})->name('overpass.index');
+require __DIR__.'/api.php';
