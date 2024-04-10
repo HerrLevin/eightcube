@@ -47,7 +47,13 @@ class VenueController
 
     private function nodesFromDatabase()
     {
-        return LocationHelper::getNearby(Node::with('tags'), $this->latitude, $this->longitude, 200);
+        return LocationHelper::getNearby(
+            Node::with('tags'),
+            $this->latitude,
+            $this->longitude,
+            200,
+            [['name', '!=', '']]
+        );
     }
 
     private function nodesFromOverpass(): Collection
@@ -85,7 +91,9 @@ class VenueController
                 );
             }
 
-            $collection->push($node);
+            if (strlen($node->name) > 0) {
+                $collection->push($node);
+            }
         }
 
         return $collection;
