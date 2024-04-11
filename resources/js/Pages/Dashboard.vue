@@ -25,8 +25,8 @@ export default {
     },
     data() {
         return {
-            statuses: [] as StatusDetail[],
-            createdStatus: null as StatusDetail|null,
+            statuses: [] as Status[],
+            createdStatus: null as Status|null,
             isShowModal: false as boolean,
             loading: false as boolean,
         };
@@ -52,7 +52,7 @@ export default {
                     this.statuses = response.data.data;
                 }).catch(() => this.loading = false);
         },
-        goToStatus(status: StatusDetail) {
+        goToStatus(status: Status) {
             router.visit(route('status', {statusId: status.id}));
         }
     }

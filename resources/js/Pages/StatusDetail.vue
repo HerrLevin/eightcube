@@ -34,7 +34,7 @@ export default {
             status: null as Status|null,
             isShowEditModal: false as boolean,
             isShowDeleteModal: false as boolean,
-            checkinText: "" as String,
+            checkinText: "" as string,
         };
     },
     mounted() {
