@@ -5,6 +5,8 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import TextBox from "@/Components/TextBox.vue";
 import Modal from "@/Components/Modal.vue";
+import axios from "axios";
+import {router} from "@inertiajs/vue3";
 
 export default {
     components: {
@@ -23,12 +25,23 @@ export default {
         if (localStorage.getItem('createdStatus')) {
             this.createdStatus = JSON.parse(localStorage.getItem('createdStatus')!);
             this.isShowModal = true;
+            localStorage.removeItem('createdStatus');
         }
+        this.fetchStatuses();
     },
     methods: {
         hideModal() {
             this.isShowModal = false;
         },
+        fetchStatuses() {
+            axios.get('/api/statuses')
+                .then(response => {
+                    this.statuses = response.data.data;
+                });
+        },
+        goToStatus(status: Status) {
+            router.visit(route('status', {statusId: status.id}));
+        }
     }
 };
 </script>
@@ -43,8 +56,18 @@ export default {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900 dark:text-gray-100">You're logged in!</div>
+                <div
+                    v-for="status in statuses"
+                    @click="goToStatus(status)"
+                    class="cursor-pointer bg-white grid grid-cols-12 md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
+                    <!-- icon -->
+                    <div class="col-span-2 text-gray-900 p-4 text-center dark:text-gray-100">
+                    </div>
+                    <div class="col-span-9 py-4 text-gray-900 dark:text-gray-100">
+                        <p class="text-xs text-gray-400">{{ status.user.name }}</p>
+                        <p>{{ status.venue.name }}</p>
+                        <p class="text-xs text-gray-400">{{ status.created_at }}</p>
+                    </div>
                 </div>
             </div>
         </div>

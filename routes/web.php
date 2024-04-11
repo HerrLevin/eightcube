@@ -22,6 +22,15 @@ Route::get('/checkin', function () {
     return Inertia::render('Checkin');
 })->middleware(['auth', 'verified'])->name('checkin');
 
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/status/{statusId}', function () {
+        return Inertia::render('Status', [
+            'statusId' => request()->route('statusId')
+        ]);
+    })->name('status');
+});
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -98,7 +98,7 @@ export default {
                 <div
                     v-for="venue in venues"
                     @click="showCheckinModal(venue)"
-                    class="bg-white grid grid-cols-12 md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
+                    class="cursor-pointer bg-white grid grid-cols-12 md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
                     <!-- icon -->
                     <div class="col-span-2 text-gray-900 p-4 text-center dark:text-gray-100">
                         <font-awesome-icon :icon="faHouse"/>
