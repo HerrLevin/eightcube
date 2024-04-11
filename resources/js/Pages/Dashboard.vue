@@ -1,6 +1,36 @@
-<script setup lang="ts">
+<script lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import {Status} from "@/types/venue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import TextBox from "@/Components/TextBox.vue";
+import Modal from "@/Components/Modal.vue";
+
+export default {
+    components: {
+        Modal, TextBox, SecondaryButton, PrimaryButton,
+        AuthenticatedLayout,
+    },
+    data() {
+        return {
+            statuses: [] as Status[],
+            createdStatus: null as Status|null,
+            isShowModal: false as boolean,
+        };
+    },
+    mounted() {
+        // get status from local storage
+        if (localStorage.getItem('createdStatus')) {
+            this.createdStatus = JSON.parse(localStorage.getItem('createdStatus')!);
+            this.isShowModal = true;
+        }
+    },
+    methods: {
+        hideModal() {
+            this.isShowModal = false;
+        },
+    }
+};
 </script>
 
 <template>
@@ -19,4 +49,23 @@ import { Head } from '@inertiajs/vue3';
             </div>
         </div>
     </AuthenticatedLayout>
+    <!-- Checkin Modal -->
+    <Modal :show="isShowModal" @close="hideModal">
+        <div class="p-6">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                Success!
+            </h2>
+
+            <div class="mt-6">
+                <p class="dark:text-gray-100">
+                    You've successfully checked in at {{ createdStatus?.venue.name }}.
+                </p>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <SecondaryButton @click="hideModal">Okay!</SecondaryButton>
+            </div>
+        </div>
+    </Modal>
+
 </template>

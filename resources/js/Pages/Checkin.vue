@@ -1,6 +1,6 @@
 <script lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import {Head} from '@inertiajs/vue3';
+import {Head, router} from '@inertiajs/vue3';
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {faCircleInfo, faLocationPin} from '@fortawesome/free-solid-svg-icons'
 import InputError from "@/Components/InputError.vue";
@@ -9,14 +9,23 @@ import DangerButton from "@/Components/DangerButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
-import {Venue} from "@/types/venue";
+import {Status, Venue} from "@/types/venue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import TextBox from "@/Components/TextBox.vue";
+import axios from "axios";
 
 export default {
     components: {
+        TextBox,
+        PrimaryButton,
         Modal, TextInput, InputLabel, DangerButton, SecondaryButton, InputError,
         FontAwesomeIcon,
         AuthenticatedLayout,
         Head,
+    },
+    remember: {
+        data: ['status'],
+        key: 'createdStatus',
     },
     setup() {
         const faHouse = faLocationPin;
@@ -25,8 +34,11 @@ export default {
     data() {
         return {
             venues: [] as Venue[],
-            isShowModal: false as boolean,
+            isShowTagModal: false as boolean,
+            isShowCheckinModal: false as boolean,
             selectedVenue: null as Venue | null,
+            checkinText: "" as string,
+            createdStatus: null as Status | null,
         }
     },
     methods: {
@@ -37,13 +49,35 @@ export default {
                     this.venues = data.data;
                 });
         },
-        showModal(show: boolean) {
-            this.isShowModal = show;
+        checkIn() {
+            axios.post('/api/statuses', {
+                venue_id: this.selectedVenue?.id,
+                body: this.checkinText,
+            }).then(response => {
+                this.createdStatus = response.data.data;
+                //save status to local storage
+                //Todo: change to vuex
+                localStorage.setItem('createdStatus', JSON.stringify(this.createdStatus));
+                router.visit('/dashboard');
+            }).catch(
+                // Todo: handle error
+            );
+        },
+        hideTagModal() {
+            this.isShowTagModal = false;
+        },
+        showCheckinModal(venue: Venue) {
+            this.selectedVenue = venue;
+            this.isShowCheckinModal = true;
+        },
+        hideCheckinModal() {
+            this.isShowCheckinModal = false;
         },
         showInfo(venue: any) {
             this.selectedVenue = venue;
-            this.showModal(true);
-        }
+            this.isShowTagModal = true;
+        },
+
     },
     mounted() {
         this.test();
@@ -63,14 +97,18 @@ export default {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div
                     v-for="venue in venues"
+                    @click="showCheckinModal(venue)"
                     class="bg-white grid grid-cols-12 md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
                     <!-- icon -->
                     <div class="col-span-2 text-gray-900 p-4 text-center dark:text-gray-100">
                         <font-awesome-icon :icon="faHouse"/>
                     </div>
-                    <div class="col-span-9 py-4 text-gray-900 dark:text-gray-100">{{ venue.name }}</div>
+                    <div class="col-span-9 py-4 text-gray-900 dark:text-gray-100">
+                        <p>{{ venue.name }}</p>
+                        <p class="text-xs text-gray-400">{{ venue.distance }} m</p>
+                    </div>
                     <div class="py-4 text-gray-900 text-center dark:text-gray-100">
-                        <a href="#" @click="showInfo(venue)">
+                        <a href="#" @click.stop="showInfo(venue)">
                             <font-awesome-icon :icon="faCircleInfo"/>
                         </a>
                     </div>
@@ -78,7 +116,28 @@ export default {
             </div>
         </div>
 
-        <Modal :show="isShowModal" @close="showModal(false)">
+        <!-- Checkin Modal -->
+        <Modal :show="isShowCheckinModal" @close="hideCheckinModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {{ selectedVenue?.name }}
+                </h2>
+
+                <div class="mt-6">
+                    <TextBox v-model="checkinText" label="Test" placeholder="What are you up to?" class="w-full"
+                             rows="3">Test
+                    </TextBox>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="hideCheckinModal">Cancel</SecondaryButton>
+                    <PrimaryButton @click="checkIn" class="ms-3">Check In</PrimaryButton>
+                </div>
+            </div>
+        </Modal>
+
+        <!-- Tag Modal -->
+        <Modal :show="isShowTagModal" @close="hideTagModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                     {{ selectedVenue?.name }}
@@ -96,25 +155,24 @@ export default {
                         </th>
                     </tr>
                     </thead>
-                <tbody>
-                <tr v-for="tag in selectedVenue?.tags">
-                    <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
-                        {{ tag.key }}
-                    </td>
-                    <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
-                        {{ tag.value }}
-                    </td>
-                </tr>
-                </tbody>
+                    <tbody>
+                    <tr v-for="tag in selectedVenue?.tags">
+                        <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
+                            {{ tag.key }}
+                        </td>
+                        <td class="border border-slate-300 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
+                            {{ tag.value }}
+                        </td>
+                    </tr>
+                    </tbody>
                 </table>
 
                 <div class="mt-6">
-                    <InputLabel for="password" value="Password" class="sr-only"/>
 
                 </div>
 
                 <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="showModal(false)">Close</SecondaryButton>
+                    <SecondaryButton @click="hideTagModal">Close</SecondaryButton>
                 </div>
             </div>
         </Modal>
