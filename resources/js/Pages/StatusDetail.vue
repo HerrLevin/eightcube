@@ -8,12 +8,14 @@ import Modal from "@/Components/Modal.vue";
 import axios from "axios";
 import {router} from "@inertiajs/vue3";
 import DangerButton from "@/Components/DangerButton.vue";
+import StatusComponent from "@/Components/Status.vue";
 
 export default {
     components: {
         DangerButton,
         Modal, TextBox, SecondaryButton, PrimaryButton,
         AuthenticatedLayout,
+        StatusComponent,
     },
     props: {
         statusId: {
@@ -101,18 +103,7 @@ export default {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    v-if="status !== null"
-                    class="bg-white grid grid-cols-12 md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
-                    <!-- icon -->
-                    <div class="col-span-2 text-gray-900 p-4 text-center dark:text-gray-100">
-                    </div>
-                    <div class="col-span-9 py-4 text-gray-900 dark:text-gray-100">
-                        <p class="text-xs text-gray-400">{{ status.user.name }}</p>
-                        <p>{{ status.venue.name }}</p>
-                        <p class="text-xs text-gray-400">{{ status.created_at }}</p>
-                    </div>
-                </div>
+                <StatusComponent v-if="status !== null" :status="status" />
             </div>
         </div>
     </AuthenticatedLayout>

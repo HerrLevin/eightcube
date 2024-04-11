@@ -8,17 +8,25 @@ import Modal from "@/Components/Modal.vue";
 import axios from "axios";
 import {router} from "@inertiajs/vue3";
 import Loading from "@/Components/Loading.vue";
+import { DateTime } from "luxon";
+import StatusComponent from "@/Components/Status.vue";
 
 export default {
+    computed: {
+        DateTime() {
+            return DateTime
+        }
+    },
     components: {
+        StatusComponent,
         Loading,
         Modal, TextBox, SecondaryButton, PrimaryButton,
         AuthenticatedLayout,
     },
     data() {
         return {
-            statuses: [] as Status[],
-            createdStatus: null as Status|null,
+            statuses: [] as StatusDetail[],
+            createdStatus: null as StatusDetail|null,
             isShowModal: false as boolean,
             loading: false as boolean,
         };
@@ -44,7 +52,7 @@ export default {
                     this.statuses = response.data.data;
                 }).catch(() => this.loading = false);
         },
-        goToStatus(status: Status) {
+        goToStatus(status: StatusDetail) {
             router.visit(route('status', {statusId: status.id}));
         }
     }
@@ -62,20 +70,7 @@ export default {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <Loading v-if="loading" />
-                <div
-                    v-else
-                    v-for="status in statuses"
-                    @click="goToStatus(status)"
-                    class="cursor-pointer bg-white grid grid-cols-12 md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
-                    <!-- icon -->
-                    <div class="col-span-2 text-gray-900 p-4 text-center dark:text-gray-100">
-                    </div>
-                    <div class="col-span-9 py-4 text-gray-900 dark:text-gray-100">
-                        <p class="text-xs text-gray-400">{{ status.user.name }}</p>
-                        <p>{{ status.venue.name }}</p>
-                        <p class="text-xs text-gray-400">{{ status.created_at }}</p>
-                    </div>
-                </div>
+                <StatusComponent v-else v-for="status in statuses" :status="status" @click="goToStatus(status)" />
             </div>
         </div>
     </AuthenticatedLayout>

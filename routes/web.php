@@ -24,7 +24,7 @@ Route::get('/checkin', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/status/{statusId}', function () {
-        return Inertia::render('Status', [
+        return Inertia::render('StatusDetail', [
             'statusId' => request()->route('statusId')
         ]);
     })->name('status');

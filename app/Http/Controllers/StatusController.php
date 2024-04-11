@@ -15,7 +15,7 @@ class StatusController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        $statuses = Status::with('user', 'venue')->get();
+        $statuses = Status::with('user', 'venue')->orderBy('id', 'desc')->get();
         return StatusResource::collection($statuses);
     }
 
