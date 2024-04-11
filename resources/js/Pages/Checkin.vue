@@ -39,15 +39,32 @@ export default {
             selectedVenue: null as Venue | null,
             checkinText: "" as string,
             createdStatus: null as Status | null,
+            latitude: null as number | null,
+            longitude: null as number | null,
         }
     },
     methods: {
-        test() {
-            fetch('/api/nearby?latitude=49.009925117955575&longitude=8.42856106114697')
-                .then(response => response.json())
-                .then((data) => {
-                    this.venues = data.data;
-                });
+        async locate() {
+            const pos = new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject);
+            });
+
+            pos.then((position: any) => {
+                this.latitude = position.coords.latitude;
+                this.longitude = position.coords.longitude;
+
+                this.fetchVenues();
+            });
+        },
+        fetchVenues() {
+            axios.get('/api/nearby', {
+                params: {
+                    latitude: this.latitude,
+                    longitude: this.longitude,
+                }
+            }).then(response => {
+                this.venues = response.data.data;
+            });
         },
         checkIn() {
             axios.post('/api/statuses', {
@@ -80,7 +97,7 @@ export default {
 
     },
     mounted() {
-        this.test();
+        this.locate();
     }
 };
 </script>
