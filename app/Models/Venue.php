@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Node extends Model
+class Venue extends Model
 {
     use HasFactory;
 
@@ -13,6 +13,6 @@ class Node extends Model
 
     public function tags()
     {
-        return $this->hasMany(NodeTag::class);
+        return $this->hasMany(VenueTag::class);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Backend;
 
 use App\Helpers\LocationHelper;
-use App\Models\Node;
+use App\Models\Venue;
 use App\Models\RequestLocation;
 use App\Services\OverpassService;
 use Illuminate\Support\Collection;
@@ -39,16 +39,16 @@ class VenueController
                 'last_requested_at' => now(),
             ]);
 
-            return $this->nodesFromOverpass();
+            return $this->venuesFromOverpass();
         }
 
-        return $this->nodesFromDatabase();
+        return $this->venuesFromDatabase();
     }
 
-    private function nodesFromDatabase()
+    private function venuesFromDatabase()
     {
         return LocationHelper::getNearby(
-            Node::with('tags'),
+            Venue::with('tags'),
             $this->latitude,
             $this->longitude,
             200,
@@ -56,43 +56,44 @@ class VenueController
         );
     }
 
-    private function nodesFromOverpass(): Collection
+    private function venuesFromOverpass(): Collection
     {
-        $venues = new OverpassService($this->latitude, $this->longitude);
-        $venues = $venues->getVenues();
+        $nodes = new OverpassService($this->latitude, $this->longitude);
+        $nodes = $nodes->getVenues();
         $collection = collect();
 
-        foreach ($venues as $venue) {
-            $node = Node::updateOrCreate(
-                ['osm_id' => $venue['id']],
+        foreach ($nodes as $node) {
+            $venue = Venue::updateOrCreate(
+                ['osm_id' => $node['id']],
                 [
-                    'name' => $venue['name'],
-                    'latitude' => $venue['latitude'],
-                    'longitude' => $venue['longitude'],
-                    'distance' => LocationHelper::distance(
-                        $this->latitude,
-                        $this->longitude,
-                        $venue['latitude'],
-                        $venue['longitude']
-                    ),
+                    'name' => $node['name'],
+                    'latitude' => $node['latitude'],
+                    'longitude' => $node['longitude'],
+
                 ]
             );
 
-            foreach ($node->tags as $tag) {
-                if (!array_key_exists($tag->key, $venue['tags'])) {
+            foreach ($venue->tags as $tag) {
+                if (!array_key_exists($tag->key, $node['tags'])) {
                     $tag->delete();
                 }
             }
 
-            foreach ($venue['tags'] as $key => $value) {
-                $node->tags()->updateOrCreate(
-                    ['node_id' => $node->id, 'key' => $key],
+            foreach ($node['tags'] as $key => $value) {
+                $venue->tags()->updateOrCreate(
+                    ['key' => $key],
                     ['value' => $value]
                 );
             }
 
-            if (strlen($node->name) > 0) {
-                $collection->push($node);
+            if (strlen($venue->name) > 0) {
+                $venue['distance'] = LocationHelper::distance(
+                    $this->latitude,
+                    $this->longitude,
+                    $node['latitude'],
+                    $node['longitude']
+                );
+                $collection->push($venue);
             }
         }
 

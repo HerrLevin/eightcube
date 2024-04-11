@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class NodeResource extends JsonResource
+class VenueTagResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,11 +15,8 @@ class NodeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name' => $this->name,
-            'latitude' => $this->latitude,
-            'longitude' => $this->longitude,
-            'distance' => $this->distance ? round($this->distance, 2) : null,
-            'tags' => NodeTagResource::collection($this->tags),
+            'key' => $this->key,
+            'value' => $this->value,
         ];
     }
 }

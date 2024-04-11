@@ -8,17 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('node_tags', function (Blueprint $table) {
+        Schema::create('venues', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('node_id')->constrained()->onDelete('cascade');
-            $table->string('key');
-            $table->string('value');
+            $table->string('name');
+            $table->bigInteger('osm_id')->unique();
+            $table->decimal('latitude', 10, 8);
+            $table->decimal('longitude', 11, 8);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('node_tags');
+        Schema::dropIfExists('venues');
     }
 };

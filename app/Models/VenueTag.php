@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class NodeTag extends Model
+class VenueTag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['node_id', 'key', 'value'];
+    protected $fillable = ['venue_id', 'key', 'value'];
 }

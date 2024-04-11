@@ -29,7 +29,7 @@ class LocationHelper
         return $result->orderBy('distance')->get();
     }
 
-    public static function distance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo)
+    public static function distance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo): float
     {
         $theta = $longitudeFrom - $longitudeTo;
         $distance = sin(deg2rad($latitudeFrom)) * sin(deg2rad($latitudeTo))
@@ -37,6 +37,6 @@ class LocationHelper
         $distance = acos($distance);
         $distance = rad2deg($distance);
         $distance = $distance * 60 * 1.1515;
-        return round($distance * 1.609344, 2);
+        return round($distance * 1609.344, 2);
     }
 }

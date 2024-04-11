@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Backend\VenueController as VenueBackend;
-use App\Http\Resources\NodeResource;
+use App\Http\Resources\VenueResource;
 use Illuminate\Http\Request;
 
 class VenueController extends Controller
@@ -21,7 +21,7 @@ class VenueController extends Controller
 
         $venues = (new VenueBackend($validated['latitude'], $validated['longitude']))->getNearbyVenues();
 
-        return NodeResource::collection($venues);
+        return VenueResource::collection($venues);
     }
 
 
