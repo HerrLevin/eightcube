@@ -13,9 +13,11 @@ import {Status, Venue} from "@/types/venue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextBox from "@/Components/TextBox.vue";
 import axios from "axios";
+import Loading from "@/Components/Loading.vue";
 
 export default {
     components: {
+        Loading,
         TextBox,
         PrimaryButton,
         Modal, TextInput, InputLabel, DangerButton, SecondaryButton, InputError,
@@ -41,10 +43,13 @@ export default {
             createdStatus: null as Status | null,
             latitude: null as number | null,
             longitude: null as number | null,
+            loading: false as boolean,
+            positionError: false as boolean
         }
     },
     methods: {
         async locate() {
+            this.positionError = false;
             const pos = new Promise((resolve, reject) => {
                 navigator.geolocation.getCurrentPosition(resolve, reject);
             });
@@ -54,17 +59,21 @@ export default {
                 this.longitude = position.coords.longitude;
 
                 this.fetchVenues();
+            }).catch(() => {
+                this.positionError = true;
             });
         },
         fetchVenues() {
+            this.loading = true;
             axios.get('/api/nearby', {
                 params: {
                     latitude: this.latitude,
                     longitude: this.longitude,
                 }
             }).then(response => {
+                this.loading = false;
                 this.venues = response.data.data;
-            });
+            }).catch(() => this.loading = false);
         },
         checkIn() {
             axios.post('/api/statuses', {
@@ -112,7 +121,12 @@ export default {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+                <InputError v-if="positionError" message="Position could not be found" />
+                <Loading v-if="loading" />
+                <InputError v-else-if="venues.length == 0" message="No venues found for current location" />
                 <div
+                    v-else
                     v-for="venue in venues"
                     @click="showCheckinModal(venue)"
                     class="cursor-pointer bg-white grid grid-cols-12 md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">

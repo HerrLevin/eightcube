@@ -7,9 +7,11 @@ import TextBox from "@/Components/TextBox.vue";
 import Modal from "@/Components/Modal.vue";
 import axios from "axios";
 import {router} from "@inertiajs/vue3";
+import Loading from "@/Components/Loading.vue";
 
 export default {
     components: {
+        Loading,
         Modal, TextBox, SecondaryButton, PrimaryButton,
         AuthenticatedLayout,
     },
@@ -18,6 +20,7 @@ export default {
             statuses: [] as Status[],
             createdStatus: null as Status|null,
             isShowModal: false as boolean,
+            loading: false as boolean,
         };
     },
     mounted() {
@@ -34,10 +37,12 @@ export default {
             this.isShowModal = false;
         },
         fetchStatuses() {
+            this.loading = true;
             axios.get('/api/statuses')
                 .then(response => {
+                    this.loading = false;
                     this.statuses = response.data.data;
-                });
+                }).catch(() => this.loading = false);
         },
         goToStatus(status: Status) {
             router.visit(route('status', {statusId: status.id}));
@@ -56,7 +61,9 @@ export default {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <Loading v-if="loading" />
                 <div
+                    v-else
                     v-for="status in statuses"
                     @click="goToStatus(status)"
                     class="cursor-pointer bg-white grid grid-cols-12 md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
