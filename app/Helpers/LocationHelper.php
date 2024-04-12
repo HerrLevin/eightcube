@@ -21,8 +21,16 @@ class LocationHelper
                     + sin(radians(?)) * sin(radians(latitude)))
                 ) AS distance',
             [$latitude, $longitude, $latitude]
-        )
-            ->having('distance', '<', $radius);
+        );
+        // check if db is sqlite
+        $connection = config('database.default');
+        $driver = config("database.connections.{$connection}.driver");
+
+        if ($driver == 'sqlite') {
+            $result->where('distance', '<', $radius);
+        } else {
+            $result->having('distance', '<', $radius);
+        }
         if (!empty($where)) {
             $result->where($where);
         }
