@@ -64,12 +64,11 @@ class VenueController
 
         foreach ($nodes as $node) {
             $venue = Venue::updateOrCreate(
-                ['osm_id' => $node['id']],
+                ['osm_type' => $node['type'], 'osm_id' => $node['id']],
                 [
                     'name' => $node['name'],
                     'latitude' => $node['latitude'],
                     'longitude' => $node['longitude'],
-
                 ]
             );
 

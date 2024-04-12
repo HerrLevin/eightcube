@@ -3,15 +3,20 @@ import {defineComponent} from 'vue'
 import {Status} from "@/types/venue";
 import Loading from "@/Components/Loading.vue";
 import {DateTime} from "luxon";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {faComment} from "@fortawesome/free-solid-svg-icons";
 
 export default defineComponent({
     name: "Status",
+    setup() {
+        return {faComment}
+    },
     computed: {
         DateTime() {
             return DateTime
         }
     },
-    components: {Loading},
+    components: {FontAwesomeIcon, Loading},
     props: {
         status: {
             required: true,
@@ -31,11 +36,8 @@ export default defineComponent({
         <div class="col-span-9 py-4 text-gray-900 dark:text-gray-100">
             <p class="text-xs text-gray-400">{{ status.user.name }}</p>
             <p>{{ status.venue.name }}</p>
+            <p v-if="status.body"><FontAwesomeIcon :icon="faComment"/>&nbsp;{{ status.body }}</p>
             <p class="text-xs text-gray-400">{{ DateTime.fromISO(status.created_at).toRelative() }}</p>
         </div>
     </div>
 </template>
-
-<style scoped>
-
-</style>

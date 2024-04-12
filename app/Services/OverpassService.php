@@ -27,6 +27,7 @@ class OverpassService
             'library',
             'toilets',
             'fountain',
+            'lounge',
         ],
         'historic',
         'tourism',
@@ -58,13 +59,13 @@ class OverpassService
         foreach (static::FILTERS as $key => $filter) {
             if (is_array($filter)) {
                 $filters = implode('|', $filter);
-                $query .= "node(around:$this->radius,$this->latitude,$this->longitude)[\"$key\"~\"$filters\"];";
+                $query .= "nwr(around:$this->radius,$this->latitude,$this->longitude)[\"$key\"~\"$filters\"];";
             } else {
-                $query .= "node(around:$this->radius,$this->latitude,$this->longitude)[\"$filter\"];";
+                $query .= "nwr(around:$this->radius,$this->latitude,$this->longitude)[\"$filter\"];";
             }
         }
 
-        $query .= ");out;";
+        $query .= ");out center;";
         return $query;
     }
 
@@ -72,11 +73,12 @@ class OverpassService
     {
         $query = $this->getQuery();
 
+
         $url = "https://overpass-api.de/api/interpreter?data=" . urlencode($query);
 
         try {
             $response = $this->client->get($url);
-        } catch (GuzzleException $e) {
+        } catch (GuzzleException) {
             return [];
         }
         $response = $response->getBody()->getContents();
@@ -93,9 +95,10 @@ class OverpassService
                 yield [
                     'id' => $element['id'],
                     'name' => $element['tags']['name'] ?? '',
-                    'latitude' => $element['lat'],
-                    'longitude' => $element['lon'],
+                    'latitude' => $element['lat'] ?? $element['center']['lat'] ?? 0,
+                    'longitude' => $element['lon'] ?? $element['center']['lon'] ?? 0,
                     'tags' => $element['tags'],
+                    'type' => $element['type']
                 ];
             }
         }

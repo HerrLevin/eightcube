@@ -9,7 +9,7 @@ class Venue extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'osm_id', 'latitude', 'longitude'];
+    protected $fillable = ['name', 'osm_type', 'osm_id', 'latitude', 'longitude'];
 
     public function tags()
     {
