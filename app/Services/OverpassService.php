@@ -91,7 +91,7 @@ class OverpassService
         $response = $this->getElements();
 
         foreach ($response['elements'] as $element) {
-            if ($element['type'] === 'node') {
+            if (in_array($element['type'], ['node', 'way', 'relation']) && isset($element['tags']['name'])) {
                 yield [
                     'id' => $element['id'],
                     'name' => $element['tags']['name'] ?? '',
