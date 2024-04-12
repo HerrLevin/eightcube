@@ -22,7 +22,7 @@ class LocationHelper
                 ) AS distance',
             [$latitude, $longitude, $latitude]
         )
-            ->where('distance', '<', $radius);
+            ->having('distance', '<', $radius);
         if (!empty($where)) {
             $result->where($where);
         }
