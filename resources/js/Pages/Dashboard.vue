@@ -70,7 +70,9 @@ export default {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <Loading v-if="loading" />
-                <StatusComponent v-else v-for="status in statuses" :status="status" @click="goToStatus(status)" />
+                <div v-else v-for="status in statuses" @click="goToStatus(status)" >
+                    <StatusComponent :status="status"/>
+                </div>
             </div>
         </div>
     </AuthenticatedLayout>
