@@ -10,7 +10,7 @@ import axios from "axios";
 import {router} from "@inertiajs/vue3";
 import DangerButton from "@/Components/DangerButton.vue";
 import StatusComponent from "@/Components/Status.vue";
-import {map, latLng, tileLayer, MapOptions, marker, divIcon} from "leaflet";
+import {Map, map, latLng, tileLayer, MapOptions, marker, divIcon} from "leaflet";
 
 export default {
     components: {
@@ -33,7 +33,7 @@ export default {
     },
     data() {
         return {
-            map: null as L.Map|null,
+            map: null as Map|null,
             status: null as Status|null,
             isShowEditModal: false as boolean,
             isShowDeleteModal: false as boolean,
@@ -48,17 +48,21 @@ export default {
     },
     methods: {
         mountMap() {
+            const latitude = this.status?.venue.latitude || 0;
+            const longitude = this.status?.venue.longitude || 0;
             const options: MapOptions = {
-                center: latLng(this.status?.venue.latitude, this.status?.venue.longitude),
+                center: latLng(latitude, longitude),
                 zoom: 16,
                 scrollWheelZoom: false,
             };
 
-            this.map = map(this.$refs.map, options);
+
+            // @ts-ignore
+            const maplayer = map(this.$refs.map, options);
             tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(this.map);
+            }).addTo(maplayer);
 
             const icon = divIcon({
                 className: 'status-icon',
@@ -67,7 +71,7 @@ export default {
                 iconAnchor: [15, 15]
             })
 
-            marker([this.status?.venue.latitude, this.status?.venue.longitude], {icon}).addTo(this.map);
+            marker([latitude, longitude], {icon}).addTo(maplayer);
         },
         fetchStatus() {
             axios.get(`/api/statuses/${this.statusId}`)
