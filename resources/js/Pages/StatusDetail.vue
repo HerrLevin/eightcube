@@ -1,4 +1,5 @@
 <script lang="ts">
+import 'leaflet/dist/leaflet.css';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Status} from "@/types/venue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -9,6 +10,7 @@ import axios from "axios";
 import {router} from "@inertiajs/vue3";
 import DangerButton from "@/Components/DangerButton.vue";
 import StatusComponent from "@/Components/Status.vue";
+import {map, latLng, tileLayer, MapOptions, marker, divIcon} from "leaflet";
 
 export default {
     components: {
@@ -31,6 +33,7 @@ export default {
     },
     data() {
         return {
+            map: null as L.Map|null,
             status: null as Status|null,
             isShowEditModal: false as boolean,
             isShowDeleteModal: false as boolean,
@@ -44,10 +47,33 @@ export default {
         }
     },
     methods: {
+        mountMap() {
+            const options: MapOptions = {
+                center: latLng(this.status?.venue.latitude, this.status?.venue.longitude),
+                zoom: 16,
+                scrollWheelZoom: false,
+            };
+
+            this.map = map(this.$refs.map, options);
+            tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(this.map);
+
+            const icon = divIcon({
+                className: 'status-icon',
+                html: "<div style='background-color: #007bff; border-color: #1a202c; border-width: 2px; width: 30px; height: 30px; border-radius: 50%; opacity: 50%;'></div>",
+                iconSize: [30, 42],
+                iconAnchor: [15, 15]
+            })
+
+            marker([this.status?.venue.latitude, this.status?.venue.longitude], {icon}).addTo(this.map);
+        },
         fetchStatus() {
             axios.get(`/api/statuses/${this.statusId}`)
                 .then(response => {
                     this.status = response.data.data;
+                    this.mountMap();
                 })
                 .catch(() => router.visit(route('dashboard')));
         },
@@ -101,11 +127,16 @@ export default {
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <StatusComponent v-if="status !== null" :status="status" />
+        <div class="flex flex-col h-screen">
+            <div ref="map" id="map" class="flex h-3/5">&nbsp;</div>
+
+            <div class="py-12 h-1/5">
+                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <StatusComponent v-if="status !== null" :status="status" />
+                </div>
             </div>
         </div>
+<!-- -->
     </AuthenticatedLayout>
 
 
@@ -144,3 +175,12 @@ export default {
         </div>
     </Modal>
 </template>
+
+<style scoped>
+.custom-div-icon {
+    background-color: #007bff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+</style>
