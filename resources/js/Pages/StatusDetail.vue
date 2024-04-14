@@ -1,6 +1,5 @@
 <script lang="ts">
 import 'leaflet/dist/leaflet.css';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Status} from "@/types/venue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -11,13 +10,14 @@ import {router} from "@inertiajs/vue3";
 import DangerButton from "@/Components/DangerButton.vue";
 import StatusComponent from "@/Components/Status.vue";
 import {Map, map, latLng, tileLayer, MapOptions, marker, divIcon} from "leaflet";
+import GeneralLayout from "@/Layouts/GeneralLayout.vue";
 
 export default {
     components: {
         DangerButton,
         Modal, TextBox, SecondaryButton, PrimaryButton,
-        AuthenticatedLayout,
         StatusComponent,
+        GeneralLayout,
     },
     props: {
         statusId: {
@@ -122,7 +122,7 @@ export default {
 <template>
     <Head title="Dashboard" />
 
-    <AuthenticatedLayout>
+    <GeneralLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Status from {{ status?.user.name }}
@@ -141,7 +141,7 @@ export default {
             </div>
         </div>
 <!-- -->
-    </AuthenticatedLayout>
+    </GeneralLayout>
 
 
     <!-- Delete Modal -->

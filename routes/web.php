@@ -22,13 +22,11 @@ Route::get('/checkin', function () {
     return Inertia::render('Checkin');
 })->middleware(['auth', 'verified'])->name('checkin');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/status/{statusId}', function () {
-        return Inertia::render('StatusDetail', [
-            'statusId' => request()->route('statusId')
-        ]);
-    })->name('status');
-});
+Route::get('/status/{statusId}', function () {
+    return Inertia::render('StatusDetail', [
+        'statusId' => request()->route('statusId')
+    ]);
+})->name('status');
 
 
 Route::middleware('auth')->group(function () {
@@ -37,5 +35,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/edit', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
-require __DIR__.'/api.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/api.php';
