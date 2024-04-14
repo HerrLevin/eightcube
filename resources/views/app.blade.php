@@ -3,8 +3,17 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="#272b5c">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#272b5c">
+        <link rel="shortcut icon" sizes="512x512" href="/pwa-512x512.png">
+        <link rel="shortcut icon" sizes="128x128" href="/pwa-128x128.png">
+        <link rel="shortcut icon" sizes="512x512" href="/pwa-512x512.png">
+        <link rel="shortcut icon" sizes="128x128" href="/pwa-128x128.png">
+        <meta name="name" content="{{ config('app.name', 'OpenPlace') }}">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'OpenPlace') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
