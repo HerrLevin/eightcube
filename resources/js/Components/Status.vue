@@ -7,6 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {faCircleInfo, faComment} from "@fortawesome/free-solid-svg-icons";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Modal from "@/Components/Modal.vue";
+import {Link} from "@inertiajs/vue3";
 
 export default defineComponent({
     name: "Status",
@@ -31,7 +32,7 @@ export default defineComponent({
             this.isShowTagModal = false;
         }
     },
-    components: {Modal, SecondaryButton, FontAwesomeIcon, Loading},
+    components: {Modal, SecondaryButton, FontAwesomeIcon, Loading, Link},
     props: {
         status: {
             required: true,
@@ -49,7 +50,11 @@ export default defineComponent({
             <!-- profile picture -->
         </div>
         <div class="col-span-9 py-4 text-gray-900 dark:text-gray-100">
-            <p class="text-xs text-gray-400">{{ status.user.name }}</p>
+            <p class="text-xs text-gray-400"><Link
+                @click.stop
+                :href="route('profile', {userId: status.user.id})" class="text-blue-500 hover:underline"
+                >
+            {{ status.user.name }}</Link></p>
             <p>{{ status.venue.name }}</p>
             <p v-if="status.body"><FontAwesomeIcon :icon="faComment"/>&nbsp;{{ status.body }}</p>
             <p class="text-xs text-gray-400">{{ DateTime.fromISO(status.created_at).toRelative() }}</p>

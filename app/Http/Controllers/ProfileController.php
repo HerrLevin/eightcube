@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Resources\ProfileResource;
+use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +15,10 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    public function show(Request $request, $userId): ProfileResource
+    {
+        return new ProfileResource(User::with('statuses')->findOrFail($userId));
+    }
     /**
      * Display the user's profile form.
      */

@@ -35,6 +35,11 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('checkin')" :active="route().current('checkin')">
                                     Checkin
                                 </NavLink>
+                                <NavLink
+                                    :href="route('profile', {userId: $page.props.auth.user.id})"
+                                    :active="route().current('profile')">
+                                    Profile
+                                </NavLink>
                             </div>
                         </div>
 
@@ -120,6 +125,11 @@ const showingNavigationDropdown = ref(false);
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('checkin')" :active="route().current('checkin')">
                             Checkin
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('profile', {userId: $page.props.auth.user.id})"
+                            :active="route().current('profile')">
+                            Profile
                         </ResponsiveNavLink>
                     </div>
 

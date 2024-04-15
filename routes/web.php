@@ -28,11 +28,17 @@ Route::get('/status/{statusId}', function () {
     ]);
 })->name('status');
 
+Route::get('/profile/{userId}', function () {
+    return Inertia::render('Profile', [
+        'userId' => request()->route('userId')
+    ]);
+})->name('profile');
+
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile/edit', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile/edit', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/settings/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/settings/edit', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/settings/edit', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__ . '/auth.php';

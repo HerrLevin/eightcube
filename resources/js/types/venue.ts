@@ -25,3 +25,9 @@ export type Status = {
     created_at: string,
     updated_at: string
 }
+
+export type Profile = {
+    id: number,
+    name: string,
+    statuses: Status[]
+}

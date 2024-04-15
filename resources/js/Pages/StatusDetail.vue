@@ -140,7 +140,6 @@ export default {
                 </div>
             </div>
         </div>
-<!-- -->
     </GeneralLayout>
 
 
@@ -186,5 +185,9 @@ export default {
     width: 30px;
     height: 30px;
     border-radius: 50%;
+}
+
+.leaflet-pane {
+    z-index: 10 !important;
 }
 </style>
