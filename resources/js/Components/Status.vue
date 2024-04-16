@@ -3,17 +3,12 @@ import {defineComponent} from 'vue'
 import {Status} from "@/types/venue";
 import Loading from "@/Components/Loading.vue";
 import {DateTime} from "luxon";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {faCircleInfo, faComment} from "@fortawesome/free-solid-svg-icons";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Modal from "@/Components/Modal.vue";
 import {Link} from "@inertiajs/vue3";
 
 export default defineComponent({
     name: "Status",
-    setup() {
-        return {faComment, faCircleInfo}
-    },
     computed: {
         DateTime() {
             return DateTime
@@ -32,7 +27,7 @@ export default defineComponent({
             this.isShowTagModal = false;
         }
     },
-    components: {Modal, SecondaryButton, FontAwesomeIcon, Loading, Link},
+    components: {Modal, SecondaryButton, Loading, Link},
     props: {
         status: {
             required: true,
@@ -56,12 +51,12 @@ export default defineComponent({
                 >
             {{ status.user.name }}</Link></p>
             <p>{{ status.venue.name }}</p>
-            <p v-if="status.body"><FontAwesomeIcon :icon="faComment"/>&nbsp;{{ status.body }}</p>
+            <p v-if="status.body"><i class="fas fa-comment"></i>&nbsp;{{ status.body }}</p>
             <p class="text-xs text-gray-400">{{ DateTime.fromISO(status.created_at).toRelative() }}</p>
         </div>
         <div class="py-4 text-gray-900 text-center dark:text-gray-100">
             <a href="#" @click.stop="showTagModal">
-                <font-awesome-icon :icon="faCircleInfo"/>
+                <i class="fas fa-circle-info"></i>
             </a>
         </div>
     </div>

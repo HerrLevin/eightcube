@@ -1,8 +1,6 @@
 <script lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Head, router} from '@inertiajs/vue3';
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {faCircleInfo, faLocationPin} from '@fortawesome/free-solid-svg-icons'
 import InputError from "@/Components/InputError.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
@@ -14,6 +12,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextBox from "@/Components/TextBox.vue";
 import axios from "axios";
 import Loading from "@/Components/Loading.vue";
+import {getIconFromTags} from "@/Services/Icons/Icon";
 
 export default {
     components: {
@@ -21,17 +20,12 @@ export default {
         TextBox,
         PrimaryButton,
         Modal, TextInput, InputLabel, DangerButton, SecondaryButton, InputError,
-        FontAwesomeIcon,
         AuthenticatedLayout,
         Head,
     },
     remember: {
         data: ['status'],
         key: 'createdStatus',
-    },
-    setup() {
-        const faHouse = faLocationPin;
-        return {faHouse, faCircleInfo};
     },
     data() {
         return {
@@ -50,6 +44,7 @@ export default {
         }
     },
     methods: {
+        getIconFromTags,
         async locate() {
             this.positionError = false;
             const pos = new Promise((resolve, reject) => {
@@ -151,15 +146,15 @@ export default {
                         class="cursor-pointer bg-white grid grid-cols-12 md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
                         <!-- icon -->
                         <div class="col-span-2 text-gray-900 p-4 text-center dark:text-gray-100">
-                            <font-awesome-icon :icon="faHouse"/>
+                            <i class="fas category-icon" :class="getIconFromTags(venue.tags)"></i>
                         </div>
                         <div class="col-span-9 py-4 text-gray-900 dark:text-gray-100">
-                            <p>{{ venue.name }}</p>
+                            <p class="venue-title">{{ venue.name }}</p>
                             <p class="text-xs text-gray-400">{{ venue.distance }} m</p>
                         </div>
                         <div class="py-4 text-gray-900 text-center dark:text-gray-100">
                             <a href="#" @click.stop="showInfo(venue)">
-                                <font-awesome-icon :icon="faCircleInfo"/>
+                                <i class="fas fa-circle-info info-icon"></i>
                             </a>
                         </div>
                     </div>
@@ -229,3 +224,26 @@ export default {
         </Modal>
     </AuthenticatedLayout>
 </template>
+<style scoped>
+.category-icon {
+    font-size: 30px;
+    display: inline-block;
+    line-height: 40px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.info-icon {
+    vertical-align: bottom;
+    line-height: 40px;
+    height: 40px;
+}
+
+.venue-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+</style>

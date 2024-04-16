@@ -11,6 +11,7 @@ import DangerButton from "@/Components/DangerButton.vue";
 import StatusComponent from "@/Components/Status.vue";
 import {Map, map, latLng, tileLayer, MapOptions, marker, divIcon} from "leaflet";
 import GeneralLayout from "@/Layouts/GeneralLayout.vue";
+import {getIconFromTags} from "@/Services/Icons/Icon";
 
 export default {
     components: {
@@ -64,9 +65,12 @@ export default {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(maplayer);
 
+            const categoryIcon = '<i class="fas ' + getIconFromTags(this.status?.venue.tags || []) + '"></i>';
+            console.log(categoryIcon);
+
             const icon = divIcon({
                 className: 'status-icon',
-                html: "<div style='background-color: #007bff; border-color: #1a202c; border-width: 2px; width: 30px; height: 30px; border-radius: 50%; opacity: 50%;'></div>",
+                html: "<div class='custom-div-icon'>" + categoryIcon + "</div>",
                 iconSize: [30, 42],
                 iconAnchor: [15, 15]
             })
@@ -179,12 +183,21 @@ export default {
     </Modal>
 </template>
 
-<style scoped>
+<style>
 .custom-div-icon {
-    background-color: #007bff;
-    width: 30px;
-    height: 30px;
+    background-color: rgba(0, 123, 255, 0.7);
+    border-color: rgb(0, 123, 255);
+    border-width: 2px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
+    text-align: center;
+    color: white;
+}
+.custom-div-icon i {
+    color: white;
+    text-shadow: 1px 1px 1px black;
+    line-height: 22px;
 }
 
 .leaflet-pane {
