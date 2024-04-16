@@ -6,7 +6,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import TextBox from "@/Components/TextBox.vue";
 import Modal from "@/Components/Modal.vue";
 import axios from "axios";
-import {router} from "@inertiajs/vue3";
+import {router, Link} from "@inertiajs/vue3";
 import Loading from "@/Components/Loading.vue";
 import { DateTime } from "luxon";
 import StatusComponent from "@/Components/Status.vue";
@@ -21,7 +21,7 @@ export default {
         StatusComponent,
         Loading,
         Modal, TextBox, SecondaryButton, PrimaryButton,
-        AuthenticatedLayout,
+        AuthenticatedLayout, Link
     },
     data() {
         return {
@@ -76,6 +76,9 @@ export default {
             </div>
         </div>
     </AuthenticatedLayout>
+    <Link :href="route('checkin')" class="fixed z-90 bottom-10 right-8 bg-blue-600 w-20 h-20 rounded-full drop-shadow-lg flex justify-center items-center text-white text-4xl hover:bg-blue-700 hover:drop-shadow-2xl">
+        <i class="fa fa-plus"></i>
+    </Link>
     <!-- Checkin Modal -->
     <Modal :show="isShowModal" @close="hideModal">
         <div class="p-6">
