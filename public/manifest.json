@@ -1,3 +1,5 @@
 {
-    "display": "standalone"
+    "display": "standalone",
+    "start_url": "/dashboard",
+    "scope": "/"
 }

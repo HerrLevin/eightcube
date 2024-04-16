@@ -13,6 +13,7 @@
         <link rel="shortcut icon" sizes="128x128" href="/pwa-128x128.png">
         <link rel="shortcut icon" sizes="512x512" href="/pwa-512x512.png">
         <link rel="shortcut icon" sizes="128x128" href="/pwa-128x128.png">
+        <link rel="manifest" href="/manifest.json">
         <meta name="name" content="{{ config('app.name', 'OpenPlace') }}">
 
         <title inertia>{{ config('app.name', 'OpenPlace') }}</title>
