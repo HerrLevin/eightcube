@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'ignore_overpass_cache' => env('APP_IGNORE_OVERPASS_CACHE', false),
+
 ];

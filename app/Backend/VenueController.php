@@ -32,7 +32,7 @@ class VenueController
 
 
         // to reduce the number of requests to the Overpass API, we only request new locations every 30 minutes
-        if ($locations->isEmpty()) {
+        if ($locations->isEmpty() || config('app.ignore_overpass_cache')) {
             RequestLocation::create([
                 'latitude' => $this->latitude,
                 'longitude' => $this->longitude,
@@ -79,7 +79,7 @@ class VenueController
             }
 
             foreach ($node['tags'] as $key => $value) {
-                $venue->tags()->updateOrCreate(
+                $venue->tags[] = $venue->tags()->updateOrCreate(
                     ['key' => $key],
                     ['value' => $value]
                 );
