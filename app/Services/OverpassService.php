@@ -17,10 +17,12 @@ class OverpassService
             'cafe',
             'bank',
             'pub',
+            'bar',
             'biergarten',
             'restaurant',
             'fast_food',
             'food_court',
+            'ice_cream',
             'pharmacy',
             'doctors',
             'clinic',
@@ -28,10 +30,24 @@ class OverpassService
             'toilets',
             'fountain',
             'lounge',
+            'college',
+            'dancing_school',
+            'driving_school',
+            'first_aid_school',
+            'kindergarten',
+            'language_school',
         ],
         'historic',
         'tourism',
+        'office',
         'shop',
+        'parking',
+        'building' => [
+            'office',
+        ],
+        'landuse' => [
+            'events'
+        ],
         'railway' => [
             'station',
             'tram_stop',
@@ -59,9 +75,16 @@ class OverpassService
         foreach (static::FILTERS as $key => $filter) {
             if (is_array($filter)) {
                 $filters = implode('|', $filter);
-                $query .= "nwr(around:$this->radius,$this->latitude,$this->longitude)[\"$key\"~\"$filters\"];";
+                $query .= sprintf(
+                    'nwr(around:%d,%f,%f)["%s"~"%s"]["name"];',
+                    $this->radius,
+                    $this->latitude,
+                    $this->longitude,
+                    $key,
+                    $filters
+                );
             } else {
-                $query .= "nwr(around:$this->radius,$this->latitude,$this->longitude)[\"$filter\"];";
+                $query .= "nwr(around:$this->radius,$this->latitude,$this->longitude)[\"$filter\"][\"name\"];";
             }
         }
 
