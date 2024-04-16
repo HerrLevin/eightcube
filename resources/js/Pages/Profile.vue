@@ -1,5 +1,4 @@
 <script lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Profile, Status} from "@/types/venue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -10,6 +9,7 @@ import {router} from "@inertiajs/vue3";
 import Loading from "@/Components/Loading.vue";
 import { DateTime } from "luxon";
 import StatusComponent from "@/Components/Status.vue";
+import GeneralLayout from "@/Layouts/GeneralLayout.vue";
 
 export default {
     computed: {
@@ -25,10 +25,10 @@ export default {
         },
     },
     components: {
+        GeneralLayout,
         StatusComponent,
         Loading,
         Modal, TextBox, SecondaryButton, PrimaryButton,
-        AuthenticatedLayout,
     },
     data() {
         return {
@@ -59,7 +59,7 @@ export default {
 <template>
     <Head title="Profile" />
 
-    <AuthenticatedLayout>
+    <GeneralLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Profile of {{ profile?.name }}
@@ -74,6 +74,6 @@ export default {
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </GeneralLayout>
 
 </template>

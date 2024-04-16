@@ -36,6 +36,7 @@ export default {
     data() {
         return {
             venues: [] as Venue[],
+            filteredVenues: [] as Venue[],
             isShowTagModal: false as boolean,
             isShowCheckinModal: false as boolean,
             selectedVenue: null as Venue | null,
@@ -44,7 +45,8 @@ export default {
             latitude: null as number | null,
             longitude: null as number | null,
             loading: false as boolean,
-            positionError: false as boolean
+            positionError: false as boolean,
+            search: "" as string,
         }
     },
     methods: {
@@ -65,6 +67,7 @@ export default {
         },
         fetchVenues() {
             this.loading = true;
+            this.search = "";
             axios.get('/api/nearby', {
                 params: {
                     latitude: this.latitude,
@@ -73,6 +76,7 @@ export default {
             }).then(response => {
                 this.loading = false;
                 this.venues = response.data.data;
+                this.filteredVenues = this.venues;
             }).catch(() => this.loading = false);
         },
         checkIn() {
@@ -103,7 +107,18 @@ export default {
             this.selectedVenue = venue;
             this.isShowTagModal = true;
         },
-
+        filterVenues() {
+            if (this.search.length > 0) {
+                this.filteredVenues = this.venues.filter(venue => venue.name.toLowerCase().includes(this.search.toLowerCase()));
+            } else {
+                this.fetchVenues();
+            }
+        }
+    },
+    watch: {
+        search() {
+            this.filterVenues();
+        }
     },
     mounted() {
         this.locate();
@@ -122,28 +137,33 @@ export default {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-                <InputError v-if="positionError" message="Position could not be found" />
-                <Loading v-if="loading" />
-                <InputError v-else-if="venues.length == 0" message="No venues found for current location" />
-                <div
-                    v-else
-                    v-for="venue in venues"
-                    @click="showCheckinModal(venue)"
-                    class="cursor-pointer bg-white grid grid-cols-12 md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
-                    <!-- icon -->
-                    <div class="col-span-2 text-gray-900 p-4 text-center dark:text-gray-100">
-                        <font-awesome-icon :icon="faHouse"/>
+                <InputError v-if="positionError" message="Position could not be found"/>
+                <Loading v-if="loading"/>
+                <InputError v-else-if="filteredVenues.length == 0" message="No venues found for current location"/>
+                <template v-else>
+                    <div
+                        class="bg-white md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
+                        <input type="text" class="w-full" v-model="search" placeholder="Search for a venue"/>
                     </div>
-                    <div class="col-span-9 py-4 text-gray-900 dark:text-gray-100">
-                        <p>{{ venue.name }}</p>
-                        <p class="text-xs text-gray-400">{{ venue.distance }} m</p>
+                    <div
+                        v-for="venue in filteredVenues"
+                        @click="showCheckinModal(venue)"
+                        class="cursor-pointer bg-white grid grid-cols-12 md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
+                        <!-- icon -->
+                        <div class="col-span-2 text-gray-900 p-4 text-center dark:text-gray-100">
+                            <font-awesome-icon :icon="faHouse"/>
+                        </div>
+                        <div class="col-span-9 py-4 text-gray-900 dark:text-gray-100">
+                            <p>{{ venue.name }}</p>
+                            <p class="text-xs text-gray-400">{{ venue.distance }} m</p>
+                        </div>
+                        <div class="py-4 text-gray-900 text-center dark:text-gray-100">
+                            <a href="#" @click.stop="showInfo(venue)">
+                                <font-awesome-icon :icon="faCircleInfo"/>
+                            </a>
+                        </div>
                     </div>
-                    <div class="py-4 text-gray-900 text-center dark:text-gray-100">
-                        <a href="#" @click.stop="showInfo(venue)">
-                            <font-awesome-icon :icon="faCircleInfo"/>
-                        </a>
-                    </div>
-                </div>
+                </template>
             </div>
         </div>
 
