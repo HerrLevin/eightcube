@@ -9,3 +9,8 @@
 
 OpenSquaire is - as the name suggests - an open-source clone of the social media platform FourSquare (now known as Swarm).
 It is built using the Laravel PHP framework and Vue.js. The project is still in its early stages and is not yet ready for any production use.
+
+## Installation
+You'll need php (with sqlite support), composer, npm and sqlite installed on your system.
+
+`composer install && php artisan key:generate && php artisan migrate && npm install && php artisan serve & npm run dev`
