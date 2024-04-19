@@ -1,4 +1,5 @@
 {
+    "name": "opensquiare",
     "private": true,
     "type": "module",
     "scripts": {
