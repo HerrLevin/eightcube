@@ -13,6 +13,8 @@ class OverpassService
     private int $radius;
     private Client $client;
     private const array FILTERS = [
+        'place' => ['village'],
+        'admin_level' => ['2','4','8', '9', '10', '11'],
         'amenity' => [
             'cafe',
             'bank',
