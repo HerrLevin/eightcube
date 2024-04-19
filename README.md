@@ -1,8 +1,8 @@
 
 <p align="center">
-<a href="https://github.com/herrlevin/opensquaire/actions"><img src="https://github.com/herrlevin/opensquaire/workflows/tests/badge.svg" alt="Build Status"></a>
-<img src="https://img.shields.io/github/v/release/herrlevin/opensquaire" alt="Latest Stable Version">
-<a href="/LICENSE"><img src="https://img.shields.io/github/license/herrlevin/opensquaire" alt="License"></a>
+<a href="https://github.com/HerrLevin/opensquaire/actions"><img src="https://github.com/HerrLevin/opensquaire/workflows/tests/badge.svg" alt="Build Status"></a>
+<img src="https://img.shields.io/github/v/release/HerrLevin/opensquaire" alt="Latest Stable Version">
+<a href="/LICENSE"><img src="https://img.shields.io/github/license/HerrLevin/opensquaire" alt="License"></a>
 </p>
 
 ## About OpenSquaire
