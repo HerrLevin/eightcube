@@ -96,12 +96,13 @@ class SocialiteController extends Controller
     private function createSocialiteUser(): User
     {
         //ToDo: check for users with the same name
+        /** @var User $user */
         $user = User::create([
             'name' => $this->socialiteUser->getName(),
             'email' => $this->socialiteUser->getEmail() ?? '',
         ]);
 
-        $user->socialite()->create([
+        $user->externalOAuthService()->create([
             'provider' => $this->provider,
             'provider_id' => $this->socialiteUser->getId(),
             'token' => $this->socialiteUser->token,
