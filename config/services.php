@@ -34,7 +34,7 @@ return [
     'osm' => [
         'client_id' => env('OSM_CLIENT_ID'),
         'client_secret' => env('OSM_CLIENT_SECRET'),
-        'redirect' => 'http://127.0.0.1:8000/auth/callback/osm',
+        'redirect' => env('APP_URL') . '/auth/callback/osm',
         'scopes' => [
             'read_prefs',
             'write_api'
