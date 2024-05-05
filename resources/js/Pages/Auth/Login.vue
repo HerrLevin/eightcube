@@ -6,6 +6,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import OAuthList from "@/Pages/Auth/OAuthList.vue";
 
 defineProps<{
     canResetPassword?: boolean;
@@ -87,6 +88,9 @@ const submit = () => {
                     Log in
                 </PrimaryButton>
             </div>
+
         </form>
+
+        <OAuthList />
     </GuestLayout>
 </template>

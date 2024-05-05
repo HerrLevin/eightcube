@@ -27,6 +27,7 @@ class ProfileController extends Controller
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'externalOAuthProviders' => $request->user()->externalOAuthService->pluck('provider'),
         ]);
     }
 
@@ -65,5 +66,12 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function destroyOAuthProvider(Request $request)
+    {
+        $request->user()->externalOAuthService()->where('provider', $request->route('provider'))->delete();
+
+        return response()->noContent();
     }
 }

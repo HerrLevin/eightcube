@@ -10,6 +10,9 @@ Route::prefix('api')->middleware('api')->group(function () {
 
     Route::resource('statuses', StatusController::class)->except(['create', 'edit']);
     Route::resource('profile', ProfileController::class)->only(['show']);
+
+    Route::delete('/settings/external-services/{provider}', [ProfileController::class, 'destroyOAuthProvider'])
+        ->name('settings.external-services.destroy');
 });
 
 
