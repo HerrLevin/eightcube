@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SocialiteController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -39,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/settings/edit', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/settings/edit', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/auth/redirect/{provider}', [SocialiteController::class, 'redirectToProvider']);
+Route::get('/auth/callback/{provider}', [SocialiteController::class, 'handleProviderCallback']);
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/api.php';
