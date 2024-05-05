@@ -13,8 +13,8 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('provider');
             $table->string('provider_id')->nullable()->comment('Provider user id');
-            $table->string('token');
-            $table->string('refresh_token')->nullable();
+            $table->longText('token');
+            $table->longText('refresh_token')->nullable();
             $table->timestamps();
         });
     }
