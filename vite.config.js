@@ -23,8 +23,8 @@ export default defineConfig({
             registerType: "autoUpdate",
             includeAssets: ["favicon.svg", "favicon.ico", "robots.txt", "safari-pinned-tab.svg"],
             manifest: {
-                name: "OpenSpace",
-                short_name: "OSpace",
+                name: "OpenSquaire",
+                short_name: "OSquaire",
                 theme_color: "#8936FF",
                 background_color: "#8936FF",
                 display: "standalone",

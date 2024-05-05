@@ -131,15 +131,14 @@ export default {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
+                <div
+                    class="bg-white md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
+                    <input type="text" class="w-full" v-model="search" placeholder="Search for a venue"/>
+                </div>
                 <InputError v-if="positionError" message="Position could not be found"/>
                 <Loading v-if="loading"/>
                 <InputError v-else-if="filteredVenues.length == 0" message="No venues found for current location"/>
                 <template v-else>
-                    <div
-                        class="bg-white md:mt-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-md:border-b border-b-gray-500">
-                        <input type="text" class="w-full" v-model="search" placeholder="Search for a venue"/>
-                    </div>
                     <div
                         v-for="venue in filteredVenues"
                         @click="showCheckinModal(venue)"
