@@ -44,5 +44,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/auth/redirect/{provider}', [SocialiteController::class, 'redirectToProvider']);
 Route::get('/auth/callback/{provider}', [SocialiteController::class, 'handleProviderCallback']);
 
+Route::get('/test', [App\Http\Controllers\OsmController::class, 'test']);
+
 require __DIR__ . '/auth.php';
 require __DIR__ . '/api.php';

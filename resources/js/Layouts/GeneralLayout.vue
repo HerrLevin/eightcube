@@ -28,7 +28,7 @@ export default {
         <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3 w-full max-w-2xl px-6 lg:max-w-7xl">
             <div class="flex lg:justify-center lg:col-start-2">
                 <Link href="/">
-                    <ApplicationLogo class="w-20 h-20 fill-current text-gray-500" />
+                    <ApplicationLogo class="w-20 h-20 fill-current text-gray-500" color="#33339C"/>
                 </Link>
             </div>
             <nav class="-mx-3 flex flex-1 justify-end">

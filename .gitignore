@@ -6,6 +6,7 @@
 /public/storage
 /storage/*.key
 /vendor
+/docker-compose/mysql
 .env
 .env.backup
 .env.production
