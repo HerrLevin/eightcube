@@ -15,6 +15,8 @@ export type VenueTag = {
 export type User = {
     id: number,
     name: string,
+    username: string,
+    following: boolean,
 }
 
 export type Status = {
@@ -27,7 +29,6 @@ export type Status = {
 }
 
 export type Profile = {
-    id: number,
-    name: string,
+    user: User,
     statuses: Status[]
 }
